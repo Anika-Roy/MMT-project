@@ -182,6 +182,9 @@ class GUI:
 
         self.timer_running = False
 
+        self.participant = "Ujjwal"
+        self.songID = "A"
+
     def start_timer(self):
         self.remaining_time = 75  # Set initial remaining time
         self.update_remaining_time()
@@ -224,7 +227,7 @@ class GUI:
     #     self.start_timer()
 
     def save_timestamps_to_file(self):
-        with open("timestamps.txt", "w") as file:
+        with open(f"timestamps_{self.participant}_{self.songID}.txt", "w") as file:
             file.write(self.timestamps_text.get("1.0", tk.END))
 
     def run(self):
