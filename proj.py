@@ -193,6 +193,7 @@ class GUI:
             self.root.after(1000, self.update_remaining_time)
         else:
             self.remaining_time_label.config(text="Time's up!")
+            self.save_timestamps_to_file()
 
     def start_recording_and_playing(self):
         self.start_time = time.time()  # Record the start time
@@ -221,6 +222,10 @@ class GUI:
     #     self.timestamps_text.delete(1.0, tk.END)  # Clear the text display
     #     self.timer_running = False
     #     self.start_timer()
+
+    def save_timestamps_to_file(self):
+        with open("timestamps.txt", "w") as file:
+            file.write(self.timestamps_text.get("1.0", tk.END))
 
     def run(self):
         self.root.mainloop()
