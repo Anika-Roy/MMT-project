@@ -128,6 +128,22 @@ import threading
 import time
 from pynput import keyboard
 import pygame
+from pynput import mouse
+
+class MouseClickRecorder:
+    def __init__(self):
+        self.timestamps = []
+        self.listener = None
+
+    def start_recording(self):
+        self.timestamps = []  # Reset timestamps
+        self.listener = mouse.Listener(on_click=self.record_timestamp)
+        self.listener.start()
+
+    def record_timestamp(self, x, y, button, pressed):
+        if pressed:
+            self.timestamps.append(time.time())
+
 
 class KeyPressRecorder:
     def __init__(self):
@@ -163,17 +179,31 @@ class GUI:
         self.root = tk.Tk()
         self.root.title("Simple Recorder and Player")
 
-        self.recorder = KeyPressRecorder()
+        # self.recorder = KeyPressRecorder()
+        self.recorder = MouseClickRecorder()  # Change here
         self.player = AudioPlayer("Counting stars.wav")
 
         self.start_button = tk.Button(self.root, text="Start", command=self.start_recording_and_playing)
         self.start_button.pack()
+
+        # Add a Canvas widget to the GUI
+        self.canvas = tk.Canvas(self.root, width=400, height=400, bg="white")
+        self.canvas.pack()
+
+        # Add text to indicate where to tap
+        self.canvas.create_text(100, 100, text="Tap Here!", font=("Arial", 22), fill="black")
+
+        # Bind mouse click events to the canvas
+        self.canvas.bind("<Button-1>", self.on_canvas_click)
 
         # self.replay_button = tk.Button(self.root, text="Replay Audio", command=self.replay_audio)
         # self.replay_button.pack()
 
         self.timestamps_text = tk.Text(self.root, height=10, width=40)
         self.timestamps_text.pack()
+
+        # Bind <Return> key to start_recording_and_playing method
+        self.root.bind("<Return>", lambda event: self.start_recording_and_playing())
 
         self.start_time = None
 
@@ -220,6 +250,16 @@ class GUI:
             self.timestamps_text.see(tk.END)
         self.root.after(5, self.update_timestamps)  # Schedule the method to run again after 5 milliseconds
 
+    def on_canvas_click(self, event):
+        # This function will be called when the canvas is clicked
+        # You can handle tap events here
+        # x = self.canvas.canvasx(event.x)
+        # y = self.canvas.canvasy(event.y)
+        # timestamp = time.time()
+        # self.timestamps_text.insert(tk.END, f"{timestamp:.3f} s\n")
+        # self.timestamps_text.see(tk.END)
+        self.update_timestamps()
+    
     # def replay_audio(self):
     #     self.player.replay_audio()
     #     self.timestamps_text.delete(1.0, tk.END)  # Clear the text display
