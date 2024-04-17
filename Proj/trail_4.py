@@ -1,4 +1,4 @@
-from moviepy.editor import VideoClip
+from moviepy.editor import VideoClip, AudioFileClip
 import pygame
 import sys
 import math
@@ -9,7 +9,7 @@ pygame.init()
 # Set up screen dimensions
 width, height = 800, 600
 duration = 45  # in seconds
-bpm = 140  # beats per minute
+bpm = 100  # beats per minute
 
 # Convert BPM to FPS
 fps = bpm / 60
@@ -50,5 +50,11 @@ def make_frame(t):
 # Create VideoClip
 clip = VideoClip(make_frame, duration=duration)
 
+# Load the audio file
+audio = AudioFileClip("pure_metro100bpm.mp3")
+
+# Set the audio for the video clip
+clip = clip.set_audio(audio)
+
 # Export as video file
-clip.write_videofile("rhythmic_visuals_140_bpm.mp4", fps=fps)
+clip.write_videofile(f"rhythmic_visuals_{bpm}_bpm.mp4", fps=fps)
