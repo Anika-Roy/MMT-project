@@ -3,6 +3,7 @@ import threading
 import time
 from pynput import mouse
 import pygame
+import sys
 from moviepy.editor import VideoFileClip
 
 class MouseClickRecorder:
@@ -31,9 +32,10 @@ class VideoPlayer:
 
 
 class GUI:
-    def __init__(self):
+    def __init__(self, participant):
         self.root = tk.Tk()
         self.root.title("Simple Recorder and Player")
+        self.participant = participant
 
         self.recorder = MouseClickRecorder()
         self.player = VideoPlayer("../vis_dist_files/B.mp4")  # Change path to your video file
@@ -60,7 +62,6 @@ class GUI:
 
         self.timer_running = False
 
-        self.participant = "Ujjwal"
         self.songID = "B"
 
     # def run(self):
@@ -124,8 +125,14 @@ class GUI:
         self.root.mainloop()
 
 if __name__ == "__main__":
+    if len(sys.argv) != 2:
+        print("Usage: python script.py <participant_name>")
+        sys.exit(1)
+
+    participant_name = sys.argv[1]
+    
     # Initialize Pygame mixer
     pygame.mixer.init()
-    # Create and run the GUI
-    gui = GUI()
+    # Create and run the GUI with the participant's name
+    gui = GUI(participant_name)
     gui.run()

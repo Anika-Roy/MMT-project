@@ -4,6 +4,7 @@ import time
 from pynput import keyboard
 import pygame
 from pynput import mouse
+import sys
 
 class MouseClickRecorder:
     def __init__(self):
@@ -50,13 +51,14 @@ class AudioPlayer:
     #     pygame.mixer.music.stop()
 
 class GUI:
-    def __init__(self):
+    def __init__(self, participant):
         self.root = tk.Tk()
         self.root.title("Simple Recorder and Player")
-
+        self. participant = participant
+        
         # self.recorder = KeyPressRecorder()
         self.recorder = MouseClickRecorder()  # Change here
-        self.player = AudioPlayer("/home/anika/Desktop/MMT/Course_Project/audio_tracks/B.mp3")
+        self.player = AudioPlayer("../audio_tracks/B.mp3")
 
         self.start_button = tk.Button(self.root, text="Start", command=self.start_recording_and_playing)
         self.start_button.pack()
@@ -66,7 +68,7 @@ class GUI:
         self.canvas.pack()
 
         # Add text to indicate where to tap
-        self.canvas.create_text(100, 100, text="Tap Here!", font=("Arial", 22), fill="black")
+        self.canvas.create_text(100, 100, text=f"\n\n\n\n\n\n         Hi {participant},\n           Tap Here!", font=("Arial", 22), fill="black")
 
         # Bind mouse click events to the canvas
         self.canvas.bind("<Button-1>", self.on_canvas_click)
@@ -86,8 +88,7 @@ class GUI:
         self.remaining_time_label.pack()
 
         self.timer_running = False
-
-        self.participant = "Ujjwal"
+        
         self.songID = "B"
 
     def start_timer(self):
@@ -149,8 +150,14 @@ class GUI:
         self.root.mainloop()
 
 if __name__ == "__main__":
+    if len(sys.argv) != 2:
+        print("Usage: python script.py <participant_name>")
+        sys.exit(1)
+
+    participant_name = sys.argv[1]
+    
     # Initialize Pygame mixer
     pygame.mixer.init()
-    # Create and run the GUI
-    gui = GUI()
+    # Create and run the GUI with the participant's name
+    gui = GUI(participant_name)
     gui.run()
