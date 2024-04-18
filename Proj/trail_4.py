@@ -7,9 +7,9 @@ import math
 pygame.init()
 
 # Set up screen dimensions
-width, height = 800, 600
+width, height = 1000, 1000
 duration = 45  # in seconds
-bpm = 100  # beats per minute
+bpm = 70  # beats per minute
 
 # Convert BPM to FPS
 fps = bpm / 60
@@ -20,12 +20,12 @@ colors = [(102, 178, 255), (152, 255, 178), (204, 153, 255), (255, 204, 153), (2
 
 # Set up circles
 num_circles = 10
-circle_radius = 30
+circle_radius = 60
 circle_positions = []
 for i in range(num_circles):
     angle = (2 * math.pi / num_circles) * i
-    x = width // 2 + int(200 * math.cos(angle))
-    y = height // 2 + int(200 * math.sin(angle))
+    x = width // 2 + int(350 * math.cos(angle))
+    y = height // 2 + int(350 * math.sin(angle))
     circle_positions.append((x, y))
 
 # Define function to draw a frame

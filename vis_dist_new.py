@@ -36,28 +36,11 @@ class KeyPressRecorder:
     def record_timestamp(self, key):
         self.timestamps.append(time.time())
 
-# class VideoPlayer:
-#     def __init__(self, video_file):
-#         self.video_file = video_file
-#         self.clip = VideoFileClip(video_file)
-#         self.frames_iterator = self.clip.iter_frames()
-#         self.audio = self.clip.audio  # Get the audio from the video
-
-#     def get_next_frame(self):
-#         try:
-#             frame = next(self.frames_iterator)
-#             return ImageTk.PhotoImage(image=Image.fromarray(frame))
-#         except StopIteration:
-#             return None
-
-#     def play_audio(self):
-#         self.audio.preview()  # Play the audio
 class VideoPlayer:
     def __init__(self, video_file):
         self.video_file = video_file
         self.clip = VideoFileClip(video_file)
         self.frames_iterator = self.clip.iter_frames()
-        self.audio = self.clip.audio  # Get the audio from the video
 
     def get_next_frame(self):
         try:
@@ -66,33 +49,19 @@ class VideoPlayer:
         except StopIteration:
             return None
 
-    def play_audio(self):
-        self.audio_thread = threading.Thread(target=self._play_audio)
-        self.audio_thread.start()
-
-    def _play_audio(self):
-        try:
-            self.audio.preview()
-        except Exception as e:
-            print("Error playing audio:", e)
-
-
 class GUI:
     def __init__(self):
         self.root = tk.Tk()
         self.root.title("Simple Recorder and Player")
 
         self.recorder = MouseClickRecorder()  # Change here
-        self.player = VideoPlayer("distraction_100_90.mp4")  # Change to your video file
+        self.player = VideoPlayer("A.mp4")  # Change to your video file
 
         self.start_button = tk.Button(self.root, text="Start", command=self.start_recording_and_playing)
         self.start_button.pack()
 
-        # Bind <Return> key to start_recording_and_playing method
-        self.root.bind("<Return>", lambda event: self.start_recording_and_playing())
-
         # Add a Canvas widget to the GUI for video display
-        self.canvas = tk.Canvas(self.root, width=700, height=900, bg="black")
+        self.canvas = tk.Canvas(self.root, width=640, height=360, bg="black")
         self.canvas.pack()
 
         self.timestamps_text = tk.Text(self.root, height=10, width=40)
@@ -100,7 +69,7 @@ class GUI:
 
         self.start_time = None
 
-        self.remaining_time_label = tk.Label(self.root, text="Remaining Time: 45 seconds")
+        self.remaining_time_label = tk.Label(self.root, text="Remaining Time: 75 seconds")
         self.remaining_time_label.pack()
 
         self.timer_running = False
@@ -109,7 +78,7 @@ class GUI:
         self.songID = "A"
 
     def start_timer(self):
-        self.remaining_time = 45  # Set initial remaining time
+        self.remaining_time = 75  # Set initial remaining time
         self.update_remaining_time()
 
     def update_remaining_time(self):
@@ -121,18 +90,18 @@ class GUI:
             self.remaining_time_label.config(text="Time's up!")
             self.save_timestamps_to_file()
 
-    # def start_recording_and_playing(self):
-    #     self.start_time = time.time()  # Record the start time
-    #     self.recording_thread = threading.Thread(target=self.recorder.start_recording)
-    #     self.recording_thread.start()
+    def start_recording_and_playing(self):
+        self.start_time = time.time()  # Record the start time
+        self.recording_thread = threading.Thread(target=self.recorder.start_recording)
+        self.recording_thread.start()
 
-    #     self.update_timestamps()
+        self.update_timestamps()
 
-    #     if not self.timer_running:
-    #         self.timer_running = True
-    #         self.start_timer()
+        if not self.timer_running:
+            self.timer_running = True
+            self.start_timer()
 
-    #     self.play_video()
+        self.play_video()
 
     def update_timestamps(self):
         if self.recorder.timestamps:
@@ -148,45 +117,14 @@ class GUI:
     #         self.canvas.image = frame  # Keep a reference to prevent garbage collection
     #         self.canvas.create_image(0, 0, anchor=tk.NW, image=frame)
     #         self.root.after(33, self.play_video)  # Schedule the next frame after 33 milliseconds (30 fps)
-    #         self.player.play_audio()  # Play the audio
+
     def play_video(self):
         frame = self.player.get_next_frame()
         if frame:
-            self.canvas.delete("all")  # Clear previous frame
             self.canvas.image = frame  # Keep a reference to prevent garbage collection
             self.canvas.create_image(0, 0, anchor=tk.NW, image=frame)
-        self.root.after(33, self.play_video)  # Schedule the next frame after 33 milliseconds (30 fps)
-
-    def start_playing_video_thread(self):
-        video_thread = threading.Thread(target=self.play_video)
-        video_thread.start()
-
-    # def start_recording_and_playing(self):
-    #     self.start_time = time.time()  # Record the start time
-    #     self.recording_thread = threading.Thread(target=self.recorder.start_recording)
-    #     self.recording_thread.start()
-
-    #     self.update_timestamps()
-
-    #     if not self.timer_running:
-    #         self.timer_running = True
-    #         self.start_timer()
-
-    #     self.start_playing_video_thread()  # Start playing video in a separate thread
-    def start_recording_and_playing(self):
-        self.start_time = time.time()  # Record the start time
-        self.recording_thread = threading.Thread(target=self.recorder.start_recording)
-        self.recording_thread.start()
-
-        self.update_timestamps()
-
-        if not self.timer_running:
-            self.timer_running = True
-            self.start_timer()
-
-        self.start_playing_video_thread()  # Start playing video in a separate thread
-        self.player.play_audio()  # Start audio playback
-
+            delay = int(1000 / self.player.frame_rate)  # Calculate delay based on frame rate
+            self.root.after(delay, self.play_video)  # Schedule the next frame
 
     def save_timestamps_to_file(self):
         with open(f"timestamps_{self.participant}_{self.songID}.txt", "w") as file:
