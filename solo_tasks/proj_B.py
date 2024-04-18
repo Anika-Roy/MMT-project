@@ -87,7 +87,7 @@ class GUI:
 
         self.timer_running = False
 
-        self.participant = "Vanshita"
+        self.participant = "Ujjwal"
         self.songID = "B"
 
     def start_timer(self):

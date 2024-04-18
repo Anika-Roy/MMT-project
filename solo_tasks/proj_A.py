@@ -56,7 +56,7 @@ class GUI:
 
         # self.recorder = KeyPressRecorder()
         self.recorder = MouseClickRecorder()  # Change here
-        self.player = AudioPlayer("/home/anika/Desktop/MMT/Course_Project/audio_tracks/A.wav")
+        self.player = AudioPlayer("/home/ujjwal-shake-her/mmt/MMT-project/audio_tracks/A.wav")
 
         self.start_button = tk.Button(self.root, text="Start", command=self.start_recording_and_playing)
         self.start_button.pack()
@@ -87,7 +87,7 @@ class GUI:
 
         self.timer_running = False
 
-        self.participant = "Vanshita"
+        self.participant = "Ujjwal"
         self.songID = "A"
 
     def start_timer(self):
